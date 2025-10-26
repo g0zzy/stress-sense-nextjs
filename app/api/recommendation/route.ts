@@ -25,13 +25,15 @@ export async function POST(request: NextRequest) {
 
     const prompt = `Give me a bite-sized recommendations on ${theme}.
 
-It should not be longer than 2 sentences and keep it practical and casual.
+It should not be longer than 2 sentences and keep it practical and casual. The recommendation should be something that can be done in 5 minutes or less.
 
 Here is an example recommendation format for the theme "work stress":
 **Desk Reset · ~2 min**
-    - Clear 3 things off your desk.
-    - Place water within reach.
-    **Why:** tidy space = calmer brain.
+
+- Clear 3 things off your desk.
+- Place water within reach.
+
+**Why:** tidy space = calmer brain.
 
 Keep the format in Markdown as above.`;
 
@@ -46,7 +48,6 @@ Keep the format in Markdown as above.`;
 
     const response = result.response;
     const text = response.text();
-
     return NextResponse.json({ recommendation: text });
   } catch (error) {
     console.error('Error generating recommendation:', error);
