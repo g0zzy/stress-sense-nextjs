@@ -16,7 +16,7 @@ interface ThemeData {
   themes: [string, number][];
 }
 
-const COLORS = ['#CAE0F8', '#F7E2B6', '#D7F7D7'];
+const COLORS = ['#7ab699ff', '#cabea5ff', '#ded9acff'];
 
 export default function Home() {
   const [prompt, setPrompt] = useState('');
@@ -99,57 +99,49 @@ export default function Home() {
     }
   };
 
-  const renderPieChart = () => {
-    if (themes.length <= 1) return null;
+const renderPieChart = () => {
+  if (themes.length <= 1) return null;
 
-    const topThemes = themes.slice(0, 3);
-    const chartData = topThemes.map(([name, value]) => ({
-      name,
-      value,
-    }));
+  const topThemes = themes.slice(0, 3);
+  const chartData = topThemes.map(([name, value]) => ({
+    name,
+    value: Number(value), // Ensure value is a number
+  }));
 
-    const maxValue = Math.max(...chartData.map((d) => d.value));
+  const maxValue = Math.max(...chartData.map((d) => d.value));
 
-    return (
-      <div className="w-full max-w-md mx-auto my-6">
-        <h3 className="text-xl font-semibold mb-4">Detected Themes:</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={chartData}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              label={({ name, percent, value }: { name: string; percent: number; value: number }) => {
-                const isBold = value === maxValue;
-                return isBold
-                  ? `${name} ${(percent * 100).toFixed(0)}%`
-                  : `${name} ${(percent * 100).toFixed(0)}%`;
-              }}
-              outerRadius={100}
-              fill="#8884d8"
-              dataKey="value"
-            >
-              {chartData.map((entry, index) => {
-                const isLargest = entry.value === maxValue;
-                return (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                    stroke="#fff"
-                    strokeWidth={2}
-                    style={{
-                      filter: isLargest ? 'brightness(1.1)' : 'none',
-                    }}
-                  />
-                );
-              })}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
-    );
-  };
+  return (
+    <div className="w-full" style={{ height: '400px' }}> {/* Add fixed height */}
+      <h3 className="text-xl font-semibold mb-4 text-left">Detected Themes:</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <PieChart>
+          <Pie
+            data={chartData}
+            cx="50%"
+            cy="50%"
+            labelLine={true} // Enable label lines
+            label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+            outerRadius={80} // Reduced radius for better fit
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {chartData.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % COLORS.length]}
+                stroke="#fff"
+                strokeWidth={2}
+                style={{
+                  filter: entry.value === maxValue ? 'brightness(1.1)' : 'none',
+                }}
+              />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
 
   return (
     <div className="min-h-screen bg-cover bg-center bg-no-repeat"
@@ -157,12 +149,12 @@ export default function Home() {
            backgroundImage: 'url("https://img.freepik.com/free-vector/blank-white-leafy-background_53876-100817.jpg?t=st=1757591495~exp=1757595095~hmac=f6c2a51f11d736c6999282c680f8b191e04c50d850e23d7a1cf03a82f44ec334&w=2000")'
          }}>
       <div className="container mx-auto px-4 py-12">
-        <div className="max-w-3xl mx-auto bg-white/80 backdrop-blur-sm rounded-lg shadow-xl p-8">
+        <div className="max-w-3xl text-black mx-auto bg-white/80 backdrop-blur-sm rounded-lg shadow-xl p-8">
           <h1 className="text-4xl font-bold mb-2">Stress Sense Companion</h1>
           <h3 className="text-xl mb-6">What&apos;s on your mind? What&apos;s going on in your life?</h3>
 
           <textarea
-            className="w-full h-32 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full h-32 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d3e3dbff] resize-none"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Write here..."
@@ -171,7 +163,7 @@ export default function Home() {
           <button
             onClick={handleAnalyze}
             disabled={loading}
-            className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            className="mt-4 px-6 py-3 bg-[#7ab699ff] text-white rounded-lg hover:bg-[#69a588] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? 'Analyzing...' : 'Spot the Stress'}
           </button>
@@ -208,7 +200,7 @@ export default function Home() {
               </div>
 
               {recommendation && (
-                <div className="mt-6 p-4 bg-blue-50 rounded-lg prose prose-sm max-w-none">
+                <div className="mt-6 p-4 bg-[#d3e3dbff] rounded-lg prose prose-sm max-w-none">
                   <ReactMarkdown>{recommendation}</ReactMarkdown>
                 </div>
               )}
